@@ -1,7 +1,6 @@
 #Importing the necessary library
 import streamlit as st
 import pandas as pd
-import pydeck as pdk
 import plotly.express as px
 import matplotlib.pyplot as plt
 
@@ -9,8 +8,6 @@ def main():
     
     app()
 
-
-# This is the main app app itself, which appears when the user selects "Run the app".
 def app(): 
     # Importing the files
     path1 = "C:/Users/Moise/Documents/Data visualization/My time on earth/Data/youtube.csv"
@@ -18,7 +15,7 @@ def app():
     # Creating the DataFrames
     df1 = pd.read_csv(path1)
 
-
+    # Controls How the data is displayed
     def display_preference(df):
                 st.sidebar.title('Youtube Data')
                 choice1 = st.sidebar.selectbox("Choose a year", [2018, 2019, 2020, 2021])
@@ -74,13 +71,15 @@ def app():
                                 st.write("If we just take the channels I am subscribed to:")
                                 pie_chartS(df, 'genre')
 
-
+    #counting rows
     def count_rows(rows):
         return len(rows)
 
+    #returns a series object with the number of rows for a certain feature
     def Number(feature, df):
         return df.groupby(feature).apply(count_rows)
-    
+
+    # Creates an histogram depending on the data
     def histo(df, feature):
         fig, ax = plt.subplots()
         binss = Number(feature, df)
@@ -94,7 +93,6 @@ def app():
             else:
                 ax.set_xlabel('hours of the day')
             ax.set_ylabel('Number of videos')
-        #plt.xticks(np.arange(12), "Jan Feb Mar Apr May Jun Jul Aug Sept Oct Nov Dec ".split())
         st.pyplot(fig)
 
 
@@ -116,7 +114,7 @@ def app():
             st.write(fig)
         else:
             st.write(f"There is no data of type {feature} for the chart or it is inconsistant")
-
+    #creates a line chart
     def line_chart(df, feature):
         data =Number(feature, df)
         if(len(data) > 0):
@@ -150,25 +148,11 @@ def app():
         pieData = {feature:mesure, 'number of videos':number}
         df = pd.DataFrame(pieData)
         return df
-
+    #compare the increase or decrease in video consumption between years
     def compareYear(choice, df):
         if(choice > 2018):
             year = Number('year',df)
             percentage = ((year[choice] / year[choice - 1]) * 100) - 100
-            percentage = round(percentage, 2)
-            st.metric(label="Augmentation", value = choice, delta = percentage )
-
-    def compareMonth(choice, df):
-        if(choice > 1):
-            month = Number('month',df)
-            percentage = ((month[choice] / month[choice - 1]) * 100) - 100
-            percentage = round(percentage, 2)
-            st.metric(label="Augmentation", value = choice, delta = percentage )
-
-    def compareDay(choice, df):
-        if(choice > 1):
-            day = Number('day',df)
-            percentage = ((day[choice] / day[choice - 1]) * 100) - 100
             percentage = round(percentage, 2)
             st.metric(label="Augmentation", value = choice, delta = percentage )
     
