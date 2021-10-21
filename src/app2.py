@@ -1,6 +1,7 @@
 #Importing the necessary library
 import streamlit as st
 import pandas as pd
+import numpy as np
 import pydeck as pdk
 import reverse_geocoder as rg
 import matplotlib.pyplot as plt
@@ -10,8 +11,6 @@ def main():
     
     app()
 
-
-# This is the main app app itself, which appears when the user selects "Run the app".
 def app(): 
     # Importing the files
     path1 = "C:/Users/Moise/Documents/Data visualization/My time on earth/Data/map_data.csv"
@@ -31,7 +30,9 @@ def app():
             df = df.loc[df['month'] == choice2]
         
         if((choice1 == 2017) and (choice2 < 10)):
-            st.error("The Map data starts in October of 2017")
+            st.error("The Map data starts in October of 2017.")
+        elif((choice1 == 2018) and (choice2 > 5)):
+            st.error("The data ends in May.")
         else:
             display_3D_Map(df, choice2)
             display_hist(df)
@@ -91,11 +92,9 @@ def app():
             map = pd.DataFrame(
             np.array([[a,b]]),
             columns=['lat', 'lon'])
-            boulder_coords = [a, b]
-            my_map = folium.Map(location = boulder_coords, zoom_start = 13)
-            my_map
             st.map(map)
             break
+    # display my positions during a time interval
     def trajet(df):
         st.title("My timeline.")
         my_datetime1 = st.select_slider("Choose a starting time",df['time'])
